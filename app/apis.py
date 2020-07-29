@@ -1,7 +1,8 @@
 import json
 
-from app.db import get_properties_by_address_or_description_fragment
 from flask import Blueprint
+from app.db import (get_properties_by_address_or_description_fragment,
+                    get_selected_properties)
 
 apis_blueprint = Blueprint("apis", __name__)
 
@@ -14,6 +15,11 @@ def ping():
 @apis_blueprint.route("/search/<string>")
 def search(string):
     return json.dumps(get_properties_by_address_or_description_fragment(string))
+
+
+@apis_blueprint.route("/selected/")
+def selected():
+    return json.dumps(get_selected_properties())
 
 
 def delete():

@@ -71,13 +71,14 @@ def create_table_from_df(df, connection):
 
 def get_properties_by_address_or_description_fragment(fragment):
     """
-    Query the database for all rows whose "Full Address" or "CLASS_DESCRIPTION" columns
+    Query the database for 15 rows whose "Full Address" or "CLASS_DESCRIPTION" columns
     contain substring 'fragment." The search is case insensitive.
 
     :param fragment: A substring for which to search the "Full Address" or "CLASS_DESCRIPTION" columns.
     :type fragment: str
 
     :return: A list of dicts representing the matching properties.
+    :rtype: list
     """
 
     connection = get_database_connection()
@@ -97,26 +98,35 @@ def get_properties_by_address_or_description_fragment(fragment):
         {"fragment": "%{}%".format(fragment)}
     )
 
-    properties = cursor.fetchall()
-
-    property_dicts = []
-
-    for property_ in properties:
-        property_dict = {}
-
-        for column_index, column in enumerate(COLUMN_LIST):
-            property_dict[column] = property_[column_index]
-
-        property_dicts.append(property_dict)
+    response = cursor.fetchmany(15)
 
     connection.close()
 
-    return property_dicts
+    return get_property_dicts_from_response(response)
 
 
 def get_selected_properties():
+    """
+    Query the database for all rows whose "selected" column = 0.
+
+    :return: A list of dicts representing the matching properties.
+    :rtype: list
+    """
+
     connection = get_database_connection()
     cursor = connection.cursor()
+
+    cursor.execute('''
+        SELECT "{}", "{}", "{}"
+        FROM properties
+        WHERE selected = 1
+        '''.format(*COLUMN_LIST))
+
+    response = cursor.fetchall()
+
+    connection.close()
+
+    return get_property_dicts_from_response(response)
 
 
 def select_property(index):
@@ -127,3 +137,17 @@ def select_property(index):
 def unselect_property(index):
     connection = get_database_connection()
     cursor = connection.cursor()
+
+
+def get_property_dicts_from_response(response):
+    property_dicts = []
+
+    for property_ in response:
+        property_dict = {}
+
+        for column_index, column in enumerate(COLUMN_LIST):
+            property_dict[column] = property_[column_index]
+
+        property_dicts.append(property_dict)
+
+    return property_dicts
