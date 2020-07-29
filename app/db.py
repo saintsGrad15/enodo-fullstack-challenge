@@ -5,12 +5,6 @@ import pandas as pd
 
 logger = logging.getLogger(__name__)
 
-PANDAS_TYPES_TO_SQLITE_TYPES_MAP = {
-    "object": "text",
-    "int64": "integer",
-    "float64": "real"
-}
-
 COLUMN_LIST = [
     "index",
     "Full Address",
