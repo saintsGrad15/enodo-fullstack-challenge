@@ -86,12 +86,12 @@ def get_properties_by_address_or_description_fragment(fragment):
 
     cursor.execute(
         '''
-        SELECT "{}", "{}", "{}"
+        SELECT "{}"
         FROM properties
         WHERE "{}" LIKE :fragment
         OR "{}" LIKE :fragment
         '''.format(
-            *COLUMN_LIST,
+            '", "'.join(COLUMN_LIST),
             COLUMN_LIST[1],
             COLUMN_LIST[2]
         ),
@@ -117,10 +117,10 @@ def get_selected_properties():
     cursor = connection.cursor()
 
     cursor.execute('''
-        SELECT "{}", "{}", "{}"
+        SELECT "{}"
         FROM properties
         WHERE selected = 1
-        '''.format(*COLUMN_LIST))
+        '''.format('", "'.join(COLUMN_LIST)))
 
     response = cursor.fetchall()
 
