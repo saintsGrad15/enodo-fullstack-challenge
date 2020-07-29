@@ -1,3 +1,6 @@
+import json
+
+from app.db import get_properties_by_address_or_description_fragment
 from flask import Blueprint
 
 apis_blueprint = Blueprint("apis", __name__)
@@ -8,9 +11,9 @@ def ping():
     return "pong", 200, {}
 
 
-@apis_blueprint.route("/query/")
-def query():
-    pass
+@apis_blueprint.route("/search/<string>")
+def search(string):
+    return json.dumps(get_properties_by_address_or_description_fragment(string))
 
 
 def delete():
