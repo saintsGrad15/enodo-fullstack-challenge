@@ -8,6 +8,11 @@ html
     overflow-y: hidden;
 }
 
+body
+{
+    background-color: aliceblue;
+}
+
 #app
 {
     display: grid;
@@ -24,6 +29,8 @@ html
 .main-header
 {
     text-align: center;
+
+    color: royalblue;
 }
 
 .full-height
@@ -56,4 +63,16 @@ html
 .main-input
 {
     width: 100%;
+}
+
+.main-input input
+{
+    background-color: AliceBlue;
+}
+
+.main-input input::placeholder
+{
+    color: black;
+
+    opacity: .4;
 }

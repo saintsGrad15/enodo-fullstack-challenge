@@ -33,8 +33,7 @@
 				</el-row>
 				<el-row class="table-row" type="flex" justify="center">
 					<el-col :span="18">
-						<el-table
-								:data="selectedProperties">
+						<el-table class="main-table" :data="selectedProperties">
 							<div slot="empty">No Properties Selected</div>
 							<el-table-column
 									prop="Full Address"
