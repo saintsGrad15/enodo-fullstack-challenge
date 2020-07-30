@@ -6,8 +6,7 @@ views_blueprint = Blueprint("views", __name__,
                             static_folder="static")
 
 
-@views_blueprint.route("/", defaults={"ignored": ""})
-@views_blueprint.route("/<path:ignored>")
+@views_blueprint.route("/")
 def index(*args, **kwargs):
     return render_template("index.html")
 
