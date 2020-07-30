@@ -50,7 +50,7 @@ html
 
 .table-row
 {
-    overflow-y: scroll;
+    overflow-y: auto;
 }
 
 .main-input
