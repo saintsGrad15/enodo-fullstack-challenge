@@ -23,3 +23,31 @@ Front-end and backend to allow users to search, select, or unselect properties f
 - Include a delete button to unselect property from DB.
 - Add a test to your implementation.
 - Include a Readme on how to run your solution.
+
+---
+
+## Install, Test and Run
+
+### Install
+
+```
+git clone git@github.com:saintsGrad15/enodo-fullstack-challenge.git
+
+cd enodo-fullstack-challenge
+
+virtualenv --python=python3 enodoenv
+source enodoenv/bin/activate
+
+pip install -r requirements.txt
+```
+
+### Test
+```
+# Please run with the root of the repo as your working directory
+python3 tests/test.py
+```
+
+### Run
+```
+python3 run.py
+```
