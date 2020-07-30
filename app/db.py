@@ -26,10 +26,9 @@ def create_database():
 
     connection = get_database_connection()
 
-    db_data = get_database_data_as_df()
-    create_table_from_df(db_data, connection)
-
-    connection.close()
+    with connection:
+        db_data = get_database_data_as_df()
+        create_table_from_df(db_data, connection)
 
 
 def get_database_data_as_df():
@@ -83,25 +82,25 @@ def get_properties_by_address_or_description_fragment(fragment):
     """
 
     connection = get_database_connection()
-    cursor = connection.cursor()
 
-    cursor.execute(
-        '''
-        SELECT "{}"
-        FROM properties
-        WHERE "{}" LIKE :fragment
-        OR "{}" LIKE :fragment
-        '''.format(
-            '", "'.join(COLUMN_LIST),
-            COLUMN_LIST[1],
-            COLUMN_LIST[2]
-        ),
-        {"fragment": "%{}%".format(fragment)}
-    )
+    with connection:
+        cursor = connection.cursor()
 
-    response = cursor.fetchmany(15)
+        cursor.execute(
+            '''
+            SELECT "{}"
+            FROM properties
+            WHERE "{}" LIKE :fragment
+            OR "{}" LIKE :fragment
+            '''.format(
+                '", "'.join(COLUMN_LIST),
+                COLUMN_LIST[1],
+                COLUMN_LIST[2]
+            ),
+            {"fragment": "%{}%".format(fragment)}
+        )
 
-    connection.close()
+        response = cursor.fetchmany(15)
 
     return get_property_dicts_from_response(response)
 
@@ -115,19 +114,19 @@ def get_selected_properties():
     """
 
     connection = get_database_connection()
-    cursor = connection.cursor()
 
-    cursor.execute('''
-        SELECT "{}"
-        FROM properties
-        WHERE selected = 1
-        '''.format('", "'.join(COLUMN_LIST)))
+    with connection:
+        cursor = connection.cursor()
 
-    response = cursor.fetchall()
+        cursor.execute('''
+            SELECT "{}"
+            FROM properties
+            WHERE selected = 1
+            '''.format('", "'.join(COLUMN_LIST)))
 
-    connection.close()
+        response = cursor.fetchall()
 
-    return get_property_dicts_from_response(response)
+        return get_property_dicts_from_response(response)
 
 
 def set_property_selected_true(index):
@@ -141,17 +140,17 @@ def set_property_selected_true(index):
     """
 
     connection = get_database_connection()
-    cursor = connection.cursor()
 
-    cursor.execute('''
-        UPDATE properties
-        SET selected = 1
-        WHERE "index" = :index
-        ''', {"index": index})
+    with connection:
+        cursor = connection.cursor()
 
-    connection.commit()
+        cursor.execute('''
+            UPDATE properties
+            SET selected = 1
+            WHERE "index" = :index
+            ''', {"index": index})
 
-    connection.close()
+        connection.commit()
 
 
 def set_property_selected_false(index):
@@ -165,17 +164,17 @@ def set_property_selected_false(index):
     """
 
     connection = get_database_connection()
-    cursor = connection.cursor()
 
-    cursor.execute('''
-        UPDATE properties
-        SET selected = 0
-        WHERE "index" = :index
-        ''', {"index": index})
+    with connection:
+        cursor = connection.cursor()
 
-    connection.commit()
+        cursor.execute('''
+            UPDATE properties
+            SET selected = 0
+            WHERE "index" = :index
+            ''', {"index": index})
 
-    connection.close()
+        connection.commit()
 
 
 def get_property_dicts_from_response(response):
