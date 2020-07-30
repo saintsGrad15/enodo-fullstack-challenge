@@ -21,8 +21,9 @@ body
     grid-row-gap: 10px;
 
     position: relative;
-    top: 15%;
+    top: 10%;
 
+    min-height: 365px;
     height: 70%
 }
 
