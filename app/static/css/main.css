@@ -76,3 +76,8 @@ body
 
     opacity: .4;
 }
+
+.main-table thead .cell
+{
+    text-align: center;
+}
