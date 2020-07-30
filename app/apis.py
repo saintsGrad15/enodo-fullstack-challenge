@@ -1,7 +1,8 @@
 import json
 
 from flask import Blueprint
-from app.db import (get_properties_by_address_or_description_fragment,
+from app.db import (get_database_connection,
+                    get_properties_by_address_or_description_fragment,
                     get_selected_properties,
                     set_property_selected_true,
                     set_property_selected_false)
@@ -16,24 +17,36 @@ def ping():
 
 @apis_blueprint.route("/search/<string>/")
 def search(string):
-    return json.dumps(get_properties_by_address_or_description_fragment(string))
+    connection = get_database_connection()
+
+    with connection:
+        return json.dumps(get_properties_by_address_or_description_fragment(connection, string))
 
 
 @apis_blueprint.route("/selected/")
 def selected():
-    return json.dumps(get_selected_properties())
+    connection = get_database_connection()
+
+    with connection:
+        return json.dumps(get_selected_properties(connection))
 
 
 @apis_blueprint.route("/select_property/<int:index>/", methods=["POST"])
 def select_property(index):
-    set_property_selected_true(index)
+    connection = get_database_connection()
+
+    with connection:
+        set_property_selected_true(connection, index)
 
     return ""
 
 
 @apis_blueprint.route("/deselect_property/<int:index>/", methods=["POST"])
 def deselect_property(index):
-    set_property_selected_false(index)
+    connection = get_database_connection()
+
+    with connection:
+        set_property_selected_false(connection, index)
 
     return ""
 

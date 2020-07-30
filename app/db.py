@@ -12,23 +12,22 @@ COLUMN_LIST = [
     "selected"
 ]
 
-
-def get_database_connection():
-    return sqlite3.connect("enodo.db")
+DEFAULT_DB_NAME = "enodo.db"
 
 
-def create_database():
+def get_database_connection(db_name=DEFAULT_DB_NAME):
+    return sqlite3.connect(db_name)
+
+
+def create_database(connection):
     """
     Load spreadsheet data from disk and standup the SQLite DB.
 
     :return: None
     """
 
-    connection = get_database_connection()
-
-    with connection:
-        db_data = get_database_data_as_df()
-        create_table_from_df(db_data, connection)
+    db_data = get_database_data_as_df()
+    create_table_from_df(db_data, connection)
 
 
 def get_database_data_as_df():
@@ -69,10 +68,13 @@ def create_table_from_df(df, connection):
     logger.info("DB data inserted.")
 
 
-def get_properties_by_address_or_description_fragment(fragment):
+def get_properties_by_address_or_description_fragment(connection, fragment):
     """
     Query the database for 15 rows whose "Full Address" or "CLASS_DESCRIPTION" columns
     contain substring 'fragment." The search is case insensitive.
+
+    :param connection: An instance of a database connection.
+    :type connection: Connection
 
     :param fragment: A substring for which to search the "Full Address" or "CLASS_DESCRIPTION" columns.
     :type fragment: str
@@ -81,57 +83,57 @@ def get_properties_by_address_or_description_fragment(fragment):
     :rtype: list
     """
 
-    connection = get_database_connection()
+    cursor = connection.cursor()
 
-    with connection:
-        cursor = connection.cursor()
+    cursor.execute(
+        '''
+        SELECT "{}"
+        FROM properties
+        WHERE "{}" LIKE :fragment
+        OR "{}" LIKE :fragment
+        '''.format(
+            '", "'.join(COLUMN_LIST),
+            COLUMN_LIST[1],
+            COLUMN_LIST[2]
+        ),
+        {"fragment": "%{}%".format(fragment)}
+    )
 
-        cursor.execute(
-            '''
-            SELECT "{}"
-            FROM properties
-            WHERE "{}" LIKE :fragment
-            OR "{}" LIKE :fragment
-            '''.format(
-                '", "'.join(COLUMN_LIST),
-                COLUMN_LIST[1],
-                COLUMN_LIST[2]
-            ),
-            {"fragment": "%{}%".format(fragment)}
-        )
-
-        response = cursor.fetchmany(15)
+    response = cursor.fetchmany(15)
 
     return get_property_dicts_from_response(response)
 
 
-def get_selected_properties():
+def get_selected_properties(connection):
     """
     Query the database for all rows whose "selected" column = 0.
+
+    :param connection: An instance of a database connection.
+    :type connection: Connection
 
     :return: A list of dicts representing the matching properties.
     :rtype: list
     """
 
-    connection = get_database_connection()
+    cursor = connection.cursor()
 
-    with connection:
-        cursor = connection.cursor()
+    cursor.execute('''
+        SELECT "{}"
+        FROM properties
+        WHERE selected = 1
+        '''.format('", "'.join(COLUMN_LIST)))
 
-        cursor.execute('''
-            SELECT "{}"
-            FROM properties
-            WHERE selected = 1
-            '''.format('", "'.join(COLUMN_LIST)))
+    response = cursor.fetchall()
 
-        response = cursor.fetchall()
-
-        return get_property_dicts_from_response(response)
+    return get_property_dicts_from_response(response)
 
 
-def set_property_selected_true(index):
+def set_property_selected_true(connection, index):
     """
     Set "selected" column of the property with index 'index' to 1.
+
+    :param connection: An instance of a database connection.
+    :type connection: Connection
 
     :param index: The index of property to select.
     :type index: int
@@ -139,23 +141,23 @@ def set_property_selected_true(index):
     :return: None
     """
 
-    connection = get_database_connection()
+    cursor = connection.cursor()
 
-    with connection:
-        cursor = connection.cursor()
+    cursor.execute('''
+        UPDATE properties
+        SET selected = 1
+        WHERE "index" = :index
+        ''', {"index": index})
 
-        cursor.execute('''
-            UPDATE properties
-            SET selected = 1
-            WHERE "index" = :index
-            ''', {"index": index})
-
-        connection.commit()
+    connection.commit()
 
 
-def set_property_selected_false(index):
+def set_property_selected_false(connection, index):
     """
     Set "selected" column of the property with index 'index' to 0.
+
+    :param connection: An instance of a database connection.
+    :type connection: Connection
 
     :param index: The index of property to deselect.
     :type index: int
@@ -163,18 +165,15 @@ def set_property_selected_false(index):
     :return: None
     """
 
-    connection = get_database_connection()
+    cursor = connection.cursor()
 
-    with connection:
-        cursor = connection.cursor()
+    cursor.execute('''
+        UPDATE properties
+        SET selected = 0
+        WHERE "index" = :index
+        ''', {"index": index})
 
-        cursor.execute('''
-            UPDATE properties
-            SET selected = 0
-            WHERE "index" = :index
-            ''', {"index": index})
-
-        connection.commit()
+    connection.commit()
 
 
 def get_property_dicts_from_response(response):
