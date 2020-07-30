@@ -1,0 +1,59 @@
+html, body
+{
+    height: 100%;
+}
+
+html
+{
+    overflow-y: hidden;
+}
+
+#app
+{
+    display: grid;
+    grid-template-rows: max-content 1fr;
+
+    grid-row-gap: 10px;
+
+    position: relative;
+    top: 15%;
+
+    height: 70%
+}
+
+.main-header
+{
+    text-align: center;
+}
+
+.full-height
+{
+    height: 100%;
+}
+
+.main-row,
+.main-card
+{
+    height: 100%;
+    min-height: 0;
+}
+
+.main-card > .el-card__body
+{
+    display: grid;
+    grid-template-rows: max-content 1fr;
+    grid-row-gap: 5px;
+
+    box-sizing: border-box;
+    height: 100%;
+}
+
+.table-row
+{
+    overflow-y: scroll;
+}
+
+.main_input
+{
+    width: 100%;
+}

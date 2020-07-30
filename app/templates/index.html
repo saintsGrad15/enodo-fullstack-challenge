@@ -4,12 +4,66 @@
     <meta charset="UTF-8">
     <title>Enodo Fullstack Challenge</title>
 
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 	<script src="https://unpkg.com/vue/dist/vue.js"></script>
 	<script src="https://unpkg.com/element-ui/lib/index.js"></script>
+	<script type="module" src="/static/js/main.js"></script>
 
 	<link rel="stylesheet" href="https://unpkg.com/element-ui/lib/theme-chalk/index.css">
+	<link rel="stylesheet" href="/static/css/main.css">
 </head>
 <body>
-HEY
+
+<div id="app">
+	<el-header class="main-header">
+		<h1>Welcome to John Carrell's Enodo Coding Challenge</h1>
+	</el-header>
+	<el-row type="flex" class="row-bg main-row" justify="center">
+		<el-col :span="20" class="full-height">
+			<el-card class="box-card main-card" shadow="always">
+				<el-row type="flex" class="row-bg" justify="center">
+					<el-autocomplete
+							class="main_input inline-input"
+							placeholder="Search property addresses and descriptions..."
+							v-model="searchString"
+							:fetch-suggestions="search"
+							:trigger-on-focus="false"
+							@select="selectProperty"
+					></el-autocomplete>
+				</el-row>
+				<el-row class="table-row" type="flex" justify="center">
+					<el-col :span="18">
+						<el-table
+								:data="selectedProperties">
+							<div slot="empty">No Properties Selected</div>
+							<el-table-column
+									prop="index"
+									label="#">
+							</el-table-column>
+							<el-table-column
+									prop="Full Address"
+									label="Address">
+							</el-table-column>
+							<el-table-column
+									prop="CLASS_DESCRIPTION"
+									label="Description">
+							</el-table-column>
+							<el-table-column
+									label="Operations">
+								<template slot-scope="scope">
+									<el-button
+										size="mini"
+										type="danger"
+										@click="deselectProperty(scope.row.index)">Delete
+									</el-button>
+								</template>
+							</el-table-column>
+						</el-table>
+					</el-col>
+				</el-row>
+			</el-card>
+		</el-col>
+	</el-row>
+</div>
 </body>
 </html>
