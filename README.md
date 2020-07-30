@@ -51,3 +51,9 @@ python3 tests/test.py
 ```
 python3 run.py
 ```
+
+## Shameless Pandering
+
+Thank you for the opportunity to demonstrate my knowledge and skills.
+
+I look forward to speaking with the Enodo team soon!
