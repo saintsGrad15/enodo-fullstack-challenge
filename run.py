@@ -10,7 +10,7 @@ logger = logging.getLogger(__name__)
 
 configure_logging()
 
-flask_application = Flask("enodo")
+flask_application = Flask("enodo", static_folder="app/static")
 
 create_database()
 
