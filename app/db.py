@@ -8,7 +8,8 @@ logger = logging.getLogger(__name__)
 COLUMN_LIST = [
     "index",
     "Full Address",
-    "CLASS_DESCRIPTION"
+    "CLASS_DESCRIPTION",
+    "selected"
 ]
 
 
@@ -129,9 +130,28 @@ def get_selected_properties():
     return get_property_dicts_from_response(response)
 
 
-def select_property(index):
+def set_property_selected_true(index):
+    """
+    Set "selected" column of the property with index 'index' to 1.
+
+    :param index: The index of property to select.
+    :type index: int
+
+    :return: None
+    """
+
     connection = get_database_connection()
     cursor = connection.cursor()
+
+    cursor.execute('''
+        UPDATE properties
+        SET selected = 1
+        WHERE "index" = :index
+        ''', {"index": index})
+
+    connection.commit()
+
+    connection.close()
 
 
 def unselect_property(index):
