@@ -3,7 +3,8 @@ import json
 from flask import Blueprint
 from app.db import (get_properties_by_address_or_description_fragment,
                     get_selected_properties,
-                    set_property_selected_true)
+                    set_property_selected_true,
+                    set_property_selected_false)
 
 apis_blueprint = Blueprint("apis", __name__)
 
@@ -26,6 +27,13 @@ def selected():
 @apis_blueprint.route("/select_property/<int:index>")
 def select_property(index):
     set_property_selected_true(index)
+
+    return ""
+
+
+@apis_blueprint.route("/deselect_property/<int:index>")
+def deselect_property(index):
+    set_property_selected_false(index)
 
     return ""
 

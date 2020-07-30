@@ -154,6 +154,31 @@ def set_property_selected_true(index):
     connection.close()
 
 
+def set_property_selected_false(index):
+    """
+    Set "selected" column of the property with index 'index' to 0.
+
+    :param index: The index of property to deselect.
+    :type index: int
+
+    :return: None
+    """
+
+    connection = get_database_connection()
+    cursor = connection.cursor()
+
+    cursor.execute('''
+        UPDATE properties
+        SET selected = 0
+        WHERE "index" = :index
+        ''', {"index": index})
+
+    connection.commit()
+
+    connection.close()
+
+
+
 def unselect_property(index):
     connection = get_database_connection()
     cursor = connection.cursor()
