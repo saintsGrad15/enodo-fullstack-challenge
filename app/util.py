@@ -35,3 +35,7 @@ def configure_logging():
     dictConfig(logging_config)
 
     logger.info("Logging configured, obviously...")
+
+
+def get_show_tables_command_string():
+    return "SELECT name from sqlite_master where type= 'table'"
