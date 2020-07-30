@@ -14,7 +14,7 @@ def ping():
     return "pong", 200, {}
 
 
-@apis_blueprint.route("/search/<string>")
+@apis_blueprint.route("/search/<string>/")
 def search(string):
     return json.dumps(get_properties_by_address_or_description_fragment(string))
 
@@ -24,14 +24,14 @@ def selected():
     return json.dumps(get_selected_properties())
 
 
-@apis_blueprint.route("/select_property/<int:index>")
+@apis_blueprint.route("/select_property/<int:index>/", methods=["POST"])
 def select_property(index):
     set_property_selected_true(index)
 
     return ""
 
 
-@apis_blueprint.route("/deselect_property/<int:index>")
+@apis_blueprint.route("/deselect_property/<int:index>/", methods=["POST"])
 def deselect_property(index):
     set_property_selected_false(index)
 
