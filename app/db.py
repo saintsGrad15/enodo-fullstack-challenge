@@ -178,12 +178,6 @@ def set_property_selected_false(index):
     connection.close()
 
 
-
-def unselect_property(index):
-    connection = get_database_connection()
-    cursor = connection.cursor()
-
-
 def get_property_dicts_from_response(response):
     property_dicts = []
 
